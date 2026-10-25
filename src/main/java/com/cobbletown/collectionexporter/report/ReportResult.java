@@ -20,7 +20,8 @@ public record ReportResult(
         List<String> diagnostics,
         ReportCounts counts,
         List<ReportIssue> unresolved,
-        List<ReportIssue> conflicts
+        List<ReportIssue> conflicts,
+        List<ClassificationDiagnostic> classificationDiagnostics
 ) {
     public ReportResult {
         skinGroups = skinGroups == null ? List.of() : List.copyOf(skinGroups);
@@ -28,9 +29,11 @@ public record ReportResult(
         shiny = shiny == null ? List.of() : List.copyOf(shiny);
         other = other == null ? List.of() : List.copyOf(other);
         diagnostics = diagnostics == null ? List.of() : List.copyOf(diagnostics);
-        counts = counts == null ? new ReportCounts(0, 0, 0, 0) : counts;
+        counts = counts == null ? new ReportCounts(0, 0, 0, 0, 0, 0) : counts;
         unresolved = unresolved == null ? List.of() : List.copyOf(unresolved);
         conflicts = conflicts == null ? List.of() : List.copyOf(conflicts);
+        classificationDiagnostics = classificationDiagnostics == null
+                ? List.of() : List.copyOf(classificationDiagnostics);
     }
 
     public boolean isEmpty() {

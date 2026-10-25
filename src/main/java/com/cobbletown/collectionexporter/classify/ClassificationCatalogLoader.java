@@ -60,6 +60,8 @@ public final class ClassificationCatalogLoader {
         Map<PokemonCategory, List<CategorySpecies>> categories = parseCategories(requiredObject(root, "categories"));
         Set<String> baseSpecies = readStringSet(root, "baseSpecies");
         Set<String> customSpeciesObserved = readStringSet(root, "customSpeciesObserved");
+        List<DocumentedSpecies> documentedSpecies = parseDocumentedSpecies(root);
+        List<DocumentedForm> documentedForms = parseDocumentedForms(root);
         List<String> conflicts = readStringList(root, "conflicts");
         return new ClassificationCatalog(
                 schemaVersion,
@@ -71,6 +73,8 @@ public final class ClassificationCatalogLoader {
                 categories,
                 baseSpecies,
                 customSpeciesObserved,
+                documentedSpecies,
+                documentedForms,
                 conflicts);
     }
 
@@ -107,6 +111,66 @@ public final class ClassificationCatalogLoader {
         skins.sort(Comparator.comparingInt(SkinFamily::reportOrder)
                 .thenComparing(SkinFamily::displayName));
         return skins;
+    }
+
+    private static List<DocumentedSpecies> parseDocumentedSpecies(JsonObject root) {
+        if (!root.has("documentedSpecies")) {
+            return List.of();
+        }
+        JsonArray array = requiredArray(root, "documentedSpecies");
+        List<DocumentedSpecies> species = new ArrayList<>();
+        for (JsonElement element : array) {
+            if (!element.isJsonObject()) {
+                throw new CatalogException("each documentedSpecies entry must be an object");
+            }
+            JsonObject value = element.getAsJsonObject();
+            species.add(new DocumentedSpecies(
+                    requiredString(value, "name"),
+                    requiredString(value, "expectedSpeciesId"),
+                    stringOrNull(value, "speciesIdStatus"),
+                    stringOrNull(value, "kind"),
+                    parseCategorySet(value),
+                    stringOrNull(value, "categoryStatus"),
+                    stringOrNull(value, "evolution"),
+                    readStringList(value, "evidence")));
+        }
+        return List.copyOf(species);
+    }
+
+    private static List<DocumentedForm> parseDocumentedForms(JsonObject root) {
+        if (!root.has("documentedForms")) {
+            return List.of();
+        }
+        JsonArray array = requiredArray(root, "documentedForms");
+        List<DocumentedForm> forms = new ArrayList<>();
+        for (JsonElement element : array) {
+            if (!element.isJsonObject()) {
+                throw new CatalogException("each documentedForms entry must be an object");
+            }
+            JsonObject value = element.getAsJsonObject();
+            forms.add(new DocumentedForm(
+                    requiredString(value, "name"),
+                    stringOrNull(value, "kind"),
+                    requiredString(value, "baseSpeciesId"),
+                    stringOrNull(value, "expectedFormId"),
+                    readStringList(value, "expectedAspects"),
+                    stringOrNull(value, "status"),
+                    stringOrNull(value, "notes"),
+                    readStringList(value, "evidence")));
+        }
+        return List.copyOf(forms);
+    }
+
+    private static Set<PokemonCategory> parseCategorySet(JsonObject value) {
+        Set<PokemonCategory> categories = new LinkedHashSet<>();
+        for (String token : readStringList(value, "categories")) {
+            try {
+                categories.add(PokemonCategory.valueOf(token));
+            } catch (IllegalArgumentException invalid) {
+                throw new CatalogException("unknown documented species category: " + token);
+            }
+        }
+        return categories;
     }
 
     private static Map<PokemonCategory, List<CategorySpecies>> parseCategories(JsonObject categories) {

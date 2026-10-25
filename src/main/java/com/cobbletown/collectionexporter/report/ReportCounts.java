@@ -8,7 +8,9 @@ public record ReportCounts(
         int totalPokemon,
         int customSkins,
         int legendaryMythical,
-        int shiny
+        int shiny,
+        int paradox,
+        int ultraBeast
 ) {
     public int countFor(ReportCategory category) {
         return switch (category) {
@@ -16,7 +18,8 @@ public record ReportCounts(
             case SKINS -> customSkins;
             case LEGEND_MYTH -> legendaryMythical;
             case SHINY -> shiny;
-            case PARADOX, ULTRA_BEAST -> 0;
+            case PARADOX -> paradox;
+            case ULTRA_BEAST -> ultraBeast;
         };
     }
 }

@@ -1,5 +1,6 @@
 package com.cobbletown.collectionexporter.ui;
 
+import com.cobbletown.collectionexporter.build.BuildIdentity;
 import com.cobbletown.collectionexporter.clipboard.ClipboardResult;
 import com.cobbletown.collectionexporter.data.InventoryCompleteness;
 import com.cobbletown.collectionexporter.report.ReportCategory;
@@ -26,6 +27,7 @@ public final class CollectionExporterScreen extends Screen {
     private final Screen parent;
     private final ExportController controller;
     private final ExportScreenModel model = new ExportScreenModel();
+    private final BuildIdentity buildIdentity = BuildIdentity.loadDefault();
 
     private boolean loaded;
     private String loadFailure;
@@ -63,11 +65,14 @@ public final class CollectionExporterScreen extends Screen {
 
     private List<FilterSpec> filterSpecs() {
         List<FilterSpec> specs = new ArrayList<>();
-        specs.add(new FilterSpec("All", ReportCategory.ALL));
-        specs.add(new FilterSpec("Custom Skins", ReportCategory.SKINS));
-        specs.add(new FilterSpec("Legend & Mythic", ReportCategory.LEGEND_MYTH));
-        specs.add(new FilterSpec("Shiny", ReportCategory.SHINY));
-        specs.add(new FilterSpec("Show PC Locations", null));
+        specs.add(new FilterSpec("All", ReportCategory.ALL, false));
+        specs.add(new FilterSpec("Custom Skins", ReportCategory.SKINS, false));
+        specs.add(new FilterSpec("Legend & Mythic", ReportCategory.LEGEND_MYTH, false));
+        specs.add(new FilterSpec("Shiny", ReportCategory.SHINY, false));
+        specs.add(new FilterSpec("Show PC Locations", null, false));
+        if (buildIdentity.development()) {
+            specs.add(new FilterSpec("Dev Diagnostics", null, true));
+        }
         return specs;
     }
 
@@ -109,7 +114,9 @@ public final class CollectionExporterScreen extends Screen {
                     .checked(spec.category() == null
                             ? model.showLocations()
                             : model.isSelected(spec.category()));
-            if (spec.category() == null) {
+            if (spec.diagnostics()) {
+                builder.callback((widget, checked) -> onDiagnosticsChanged(checked));
+            } else if (spec.category() == null) {
                 builder.callback((widget, checked) -> onLocationsChanged(checked));
             } else {
                 builder.callback((widget, checked) -> onFilterChanged(spec.category(), checked));
@@ -177,6 +184,12 @@ public final class CollectionExporterScreen extends Screen {
         model.setShowLocations(checked);
         readPc(false);
         updateViewer();
+        updateCopyState();
+    }
+
+    private void onDiagnosticsChanged(boolean checked) {
+        model.setIncludeDiagnostics(checked);
+        readPc(false);
         updateCopyState();
     }
 
@@ -290,6 +303,6 @@ public final class CollectionExporterScreen extends Screen {
         return false;
     }
 
-    private record FilterSpec(String label, ReportCategory category) {
+    private record FilterSpec(String label, ReportCategory category, boolean diagnostics) {
     }
 }

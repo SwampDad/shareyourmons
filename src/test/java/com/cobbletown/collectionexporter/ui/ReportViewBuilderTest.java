@@ -39,6 +39,20 @@ class ReportViewBuilderTest {
     }
 
     @Test
+    void viewerShowsMarioAndAdventureAsSkinFamilies() {
+        ReportResult report = engine.build(TestFixtures.authoritativeSkinProgressionInventory(), defaults());
+        List<String> lines = lines(find(ReportViewBuilder.build(report, false), "CUSTOM SKINS"));
+
+        assertTrue(lines.contains("Mario"));
+        assertTrue(lines.contains("Tyrunt"));
+        assertTrue(lines.contains("Adventure"));
+        assertTrue(lines.contains("Eevee"));
+        assertTrue(lines.indexOf("Mario") < lines.indexOf("Adventure"));
+        assertTrue(lines.indexOf("Adventure") < lines.indexOf("Petal"));
+        assertFalse(lines.contains("Tron"));
+    }
+
+    @Test
     void otherCategoryStartsCollapsedWhileInterestingCategoriesStartExpanded() {
         ReportResult report = engine.build(TestFixtures.exampleInventory(),
                 ReportRequest.of(ReportCategory.ALL));

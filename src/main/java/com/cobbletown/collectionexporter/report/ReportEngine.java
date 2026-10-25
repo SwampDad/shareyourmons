@@ -4,6 +4,7 @@ import com.cobbletown.collectionexporter.classify.AspectHeuristics;
 import com.cobbletown.collectionexporter.classify.ClassificationCatalog;
 import com.cobbletown.collectionexporter.classify.ClassificationService;
 import com.cobbletown.collectionexporter.classify.ClassifiedPokemon;
+import com.cobbletown.collectionexporter.classify.DocumentedSpecies;
 import com.cobbletown.collectionexporter.classify.PokemonCategory;
 import com.cobbletown.collectionexporter.classify.SkinFamily;
 import com.cobbletown.collectionexporter.classify.SkinResolutionStatus;
@@ -111,8 +112,53 @@ public final class ReportEngine {
                 diagnostics,
                 counts(all),
                 issues(all, SkinResolutionStatus.UNRESOLVED),
-                issues(all, SkinResolutionStatus.CONFLICT));
+                issues(all, SkinResolutionStatus.CONFLICT),
+                classificationDiagnostics(all));
         return new ReportModel(included, result);
+    }
+
+    private List<ClassificationDiagnostic> classificationDiagnostics(List<ClassifiedPokemon> all) {
+        return all.stream().map(this::classificationDiagnostic).toList();
+    }
+
+    private ClassificationDiagnostic classificationDiagnostic(ClassifiedPokemon classified) {
+        PokemonRecord pokemon = classified.pokemon();
+        DocumentedSpecies documented = catalog.documentedSpecies(pokemon.speciesId());
+        String matched = "none";
+        String evidence = "none";
+        String mapping = "unresolved";
+
+        if (classified.hasSkin()) {
+            SkinFamily family = classified.skin().family();
+            matched = "skin:" + family.aspect() + " (" + family.displayName() + ")";
+            evidence = "skin catalog identity=" + family.identityStatus()
+                    + "; evidence=" + family.evidenceStatus();
+            mapping = "runtime-aspect-match";
+        } else if (documented != null) {
+            matched = "documented:" + documented.expectedSpeciesId() + " (" + documented.name() + ")";
+            evidence = String.join("; ", documented.evidence())
+                    + "; categoryStatus=" + documented.categoryStatus();
+            mapping = "expected-id";
+        } else if (!classified.categories().isEmpty()) {
+            matched = "standard:" + classified.categories().stream().map(Enum::name).sorted().toList();
+            evidence = "Cobblemon 1.8.2 species labels";
+            mapping = "runtime-species-match";
+        } else if (classified.customSpecies()) {
+            evidence = "custom/unknown species preserved";
+            mapping = "custom-unknown";
+        }
+
+        return new ClassificationDiagnostic(
+                pokemon.speciesId(),
+                pokemon.displaySpecies(),
+                pokemon.formId(),
+                pokemon.aspects(),
+                matched,
+                classified.categories(),
+                evidence,
+                mapping,
+                classified.unknownAspects(),
+                classified.customSpecies());
     }
 
     private boolean selected(ClassifiedPokemon classified, ReportRequest request) {
@@ -242,6 +288,8 @@ public final class ReportEngine {
         int customSkins = 0;
         int legendaryMythical = 0;
         int shiny = 0;
+        int paradox = 0;
+        int ultraBeast = 0;
         for (ClassifiedPokemon entry : all) {
             if (entry.hasSkin()) {
                 customSkins++;
@@ -252,8 +300,14 @@ public final class ReportEngine {
             if (entry.pokemon().shiny()) {
                 shiny++;
             }
+            if (entry.hasCategory(PokemonCategory.PARADOX)) {
+                paradox++;
+            }
+            if (entry.hasCategory(PokemonCategory.ULTRA_BEAST)) {
+                ultraBeast++;
+            }
         }
-        return new ReportCounts(all.size(), customSkins, legendaryMythical, shiny);
+        return new ReportCounts(all.size(), customSkins, legendaryMythical, shiny, paradox, ultraBeast);
     }
 
     private List<ReportIssue> issues(List<ClassifiedPokemon> all, SkinResolutionStatus status) {

@@ -3,6 +3,7 @@ package com.cobbletown.collectionexporter.classify;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,6 +28,9 @@ public final class ClassificationCatalog {
     private final Map<String, Set<PokemonCategory>> categoriesBySpecies;
     private final Set<String> baseSpecies;
     private final Set<String> customSpeciesObserved;
+    private final List<DocumentedSpecies> documentedSpecies;
+    private final Map<String, DocumentedSpecies> documentedSpeciesById;
+    private final List<DocumentedForm> documentedForms;
     private final List<String> conflicts;
 
     public ClassificationCatalog(
@@ -39,6 +43,8 @@ public final class ClassificationCatalog {
             Map<PokemonCategory, List<CategorySpecies>> categorySpecies,
             Set<String> baseSpecies,
             Set<String> customSpeciesObserved,
+            List<DocumentedSpecies> documentedSpecies,
+            List<DocumentedForm> documentedForms,
             List<String> conflicts) {
         this.schemaVersion = schemaVersion;
         this.provenance = provenance;
@@ -67,6 +73,13 @@ public final class ClassificationCatalog {
         this.categoriesBySpecies = Collections.unmodifiableMap(immutableBySpecies);
         this.baseSpecies = Collections.unmodifiableSet(new LinkedHashSet<>(baseSpecies));
         this.customSpeciesObserved = Collections.unmodifiableSet(new LinkedHashSet<>(customSpeciesObserved));
+        this.documentedSpecies = List.copyOf(documentedSpecies);
+        Map<String, DocumentedSpecies> documentedById = new LinkedHashMap<>();
+        for (DocumentedSpecies species : this.documentedSpecies) {
+            documentedById.put(species.expectedSpeciesId(), species);
+        }
+        this.documentedSpeciesById = Collections.unmodifiableMap(documentedById);
+        this.documentedForms = List.copyOf(documentedForms);
         this.conflicts = List.copyOf(conflicts);
     }
 
@@ -108,7 +121,15 @@ public final class ClassificationCatalog {
     }
 
     public Set<PokemonCategory> categoriesFor(String speciesId) {
-        return categoriesBySpecies.getOrDefault(speciesId, Set.of());
+        Set<PokemonCategory> standard = categoriesBySpecies.getOrDefault(speciesId, Set.of());
+        DocumentedSpecies documented = documentedSpeciesById.get(speciesId);
+        if (documented == null || documented.categories().isEmpty()) {
+            return standard;
+        }
+        Set<PokemonCategory> merged = EnumSet.noneOf(PokemonCategory.class);
+        merged.addAll(standard);
+        merged.addAll(documented.categories());
+        return Collections.unmodifiableSet(merged);
     }
 
     public boolean isBaseSpecies(String speciesId) {
@@ -121,6 +142,18 @@ public final class ClassificationCatalog {
 
     public Set<String> customSpeciesObserved() {
         return customSpeciesObserved;
+    }
+
+    public List<DocumentedSpecies> documentedSpecies() {
+        return documentedSpecies;
+    }
+
+    public DocumentedSpecies documentedSpecies(String expectedSpeciesId) {
+        return documentedSpeciesById.get(expectedSpeciesId);
+    }
+
+    public List<DocumentedForm> documentedForms() {
+        return documentedForms;
     }
 
     public List<String> conflicts() {

@@ -165,6 +165,73 @@ public final class TestFixtures {
                 List.of());
     }
 
+    public static PcInventorySnapshot classificationAuditInventory() {
+        sequence = 1200;
+        return new PcInventorySnapshot(
+                "2026-10-25T00:00:00Z",
+                "cobblemon-client-pc",
+                "00000000-0000-0000-0000-000000000000",
+                InventoryCompleteness.COMPLETE_SYNCHRONIZED_STORE,
+                2,
+                1,
+                List.of(
+                        pokemon("cobblemon:ironlamp", "Iron Lamp", 0, "genderless",
+                                List.of("genderless"), false, 50),
+                        pokemon("cobblemon:seraphang", "Seraphang", 0, "genderless",
+                                List.of("genderless"), false, 50)),
+                List.of());
+    }
+
+    public static PcInventorySnapshot documentedSpeciesInventory() {
+        sequence = 1100;
+        return new PcInventorySnapshot(
+                "2026-10-24T00:00:01Z",
+                "cobblemon-client-pc",
+                "00000000-0000-0000-0000-000000000000",
+                InventoryCompleteness.COMPLETE_SYNCHRONIZED_STORE,
+                2,
+                1,
+                List.of(
+                        pokemon("cobblemon:gearex", "Gearex", 4053, "male",
+                                List.of("male"), false, 50),
+                        pokemon("cobblemon:sweetclust", "Sweetclust", 4052, "female",
+                                List.of("female"), false, 50)),
+                List.of());
+    }
+
+    public static PcInventorySnapshot authoritativeSkinProgressionInventory() {
+        sequence = 1000;
+        return new PcInventorySnapshot(
+                "2026-10-24T00:00:00Z",
+                "cobblemon-client-pc",
+                "00000000-0000-0000-0000-000000000000",
+                InventoryCompleteness.COMPLETE_SYNCHRONIZED_STORE,
+                10,
+                1,
+                List.of(
+                        pokemon("cobblemon:tyrunt", "Tyrunt", 696, "male",
+                                List.of("male", "mario2026"), false, 50),
+                        pokemon("cobblemon:eevee", "Eevee", 133, "male",
+                                List.of("male", "adventure2026"), false, 50),
+                        pokemon("cobblemon:snorlax", "Snorlax", 143, "male",
+                                List.of("male", "easter2026"), false, 50),
+                        pokemon("cobblemon:armaldo", "Armaldo", 348, "male",
+                                List.of("male", "petal2026"), false, 50),
+                        pokemon("cobblemon:chesnaught", "Chesnaught", 652, "female",
+                                List.of("female", "relic2026"), false, 50),
+                        pokemon("cobblemon:dragapult", "Dragapult", 887, "male",
+                                List.of("male", "tron2026"), false, 50),
+                        pokemon("cobblemon:alakazam", "Alakazam", 65, "male",
+                                List.of("male", "july2026kimono"), false, 50),
+                        pokemon("cobblemon:jynx", "Jynx", 124, "female",
+                                List.of("female", "august2026western"), false, 50),
+                        pokemon("cobblemon:golem", "Golem", 76, "male",
+                                List.of("male", "september2026crystall"), false, 50),
+                        pokemon("cobblemon:tinkaton", "Tinkaton", 959, "female",
+                                List.of("female", "october2026spooky"), false, 50)),
+                List.of());
+    }
+
     public static PcInventorySnapshot unselectedUnresolvedInventory() {
         sequence = 800;
         return new PcInventorySnapshot(

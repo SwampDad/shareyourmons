@@ -2,9 +2,12 @@ package com.cobbletown.collectionexporter.classify;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassificationCatalogTest {
@@ -52,6 +55,61 @@ class ClassificationCatalogTest {
         assertEquals("Neon", neon.displayName());
         assertEquals("June 2026 Neon Skins", neon.officialName());
         assertTrue(neon.aliases().contains("Tron"));
+    }
+
+    @Test
+    void nineSetSkinProgressionIsOwnerAcceptedInExactOrder() {
+        var accepted = catalog.skins().stream()
+                .filter(skin -> "accepted".equals(skin.evidenceStatus()))
+                .toList();
+
+        assertEquals(List.of(
+                        "mario2026", "adventure2026", "petal2026", "relic2026",
+                        "tron2026", "july2026kimono", "august2026western",
+                        "september2026crystall", "october2026spooky"),
+                accepted.stream().map(SkinFamily::aspect).toList());
+        assertEquals(List.of(1, 2, 4, 5, 6, 7, 8, 9, 10),
+                accepted.stream().map(SkinFamily::reportOrder).toList());
+        assertEquals("separate-event", catalog.skin("easter2026").evidenceStatus());
+        assertEquals(3, catalog.skin("easter2026").reportOrder());
+    }
+
+    @Test
+    void documentedSpeciesPreserveExpectedIdsAndUnknownOrDocumentedCategories() {
+        assertEquals(10, catalog.documentedSpecies().size());
+        assertEquals("cobblemon:sweetclust", catalog.documentedSpecies("cobblemon:sweetclust").expectedSpeciesId());
+        assertEquals("unknown", catalog.documentedSpecies("cobblemon:sweetclust").categoryStatus());
+        assertTrue(catalog.documentedSpecies("cobblemon:sweetclust").categories().isEmpty());
+        assertTrue(catalog.documentedSpecies("cobblemon:sweetclust").expectedRuntimeId());
+
+        DocumentedSpecies gearex = catalog.documentedSpecies("cobblemon:gearex");
+        assertNotNull(gearex);
+        assertEquals("unresolved", gearex.categoryStatus());
+        assertTrue(gearex.categories().isEmpty());
+        assertFalse(catalog.categoriesFor("cobblemon:gearex").contains(PokemonCategory.MYTHICAL));
+        assertFalse(catalog.categoriesFor("cobblemon:tyranogear").contains(PokemonCategory.MYTHICAL));
+        assertFalse(catalog.categoriesFor("cobblemon:sweetclust").contains(PokemonCategory.MYTHICAL));
+        assertFalse(catalog.customSpeciesObserved().contains("cobblemon:gearex"));
+        assertTrue(catalog.documentedSpecies("cobblemon:ironlamp").categories()
+                .contains(PokemonCategory.PARADOX));
+        assertTrue(catalog.categoriesFor("cobblemon:ironlamp").contains(PokemonCategory.PARADOX));
+        assertEquals("conflicting", catalog.documentedSpecies("cobblemon:seraphang").categoryStatus());
+        assertTrue(catalog.documentedSpecies("cobblemon:seraphang").categories().isEmpty());
+        assertFalse(catalog.categoriesFor("cobblemon:seraphang").contains(PokemonCategory.LEGENDARY));
+        assertFalse(catalog.categoriesFor("cobblemon:seraphang").contains(PokemonCategory.MYTHICAL));
+    }
+
+    @Test
+    void documentedFormsRemainUnmappedUntilRuntimeEvidenceExists() {
+        assertEquals(5, catalog.documentedForms().size());
+        DocumentedForm archelian = catalog.documentedForms().stream()
+                .filter(form -> form.name().equals("Archelian Numel"))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("cobblemon:numel", archelian.baseSpeciesId());
+        assertNull(archelian.expectedFormId());
+        assertTrue(archelian.expectedAspects().isEmpty());
+        assertEquals("documented_unmapped", archelian.status());
     }
 
     @Test

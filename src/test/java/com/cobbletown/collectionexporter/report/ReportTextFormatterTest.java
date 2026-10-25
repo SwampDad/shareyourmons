@@ -1,6 +1,7 @@
 package com.cobbletown.collectionexporter.report;
 
 import com.cobbletown.collectionexporter.TestFixtures;
+import com.cobbletown.collectionexporter.build.BuildIdentity;
 import com.cobbletown.collectionexporter.classify.ClassificationCatalog;
 import com.cobbletown.collectionexporter.classify.ClassificationCatalogLoader;
 import com.cobbletown.collectionexporter.data.PcInventorySnapshot;
@@ -157,6 +158,60 @@ class ReportTextFormatterTest {
         assertTrue(text.contains("Tinkaton ×2"));
         assertTrue(text.contains("Zoroark"));
         assertFalse(text.contains("Box "));
+    }
+
+    @Test
+    void developmentDiagnosticsExposeRawIdentifiersAndBuildProvenance() {
+        BuildIdentity identity = new BuildIdentity("0.3.2-dev.9+abc123def456",
+                "aed4a36be29332cd175e0825ce67226b066a2129e6bb847bfe0f277a1f5653a8",
+                "6ac86c6db84d06c7fe76563e8b0ea1fcce7c5407f701a1dd924dd9e2daff6c92",
+                "2026-10-22T09:05:37.446242+00:00", 1,
+                "2026-10-25T00:00:00Z", true);
+        ReportTextFormatter diagnosticFormatter =
+                new ReportTextFormatter(ZoneId.of("UTC"), identity);
+        ReportRequest request = new ReportRequest(
+                java.util.Set.of(ReportCategory.ALL), true, true, false);
+        String text = diagnosticFormatter.format(
+                engine.build(TestFixtures.documentedSpeciesInventory(), request), request);
+
+        assertTrue(text.contains("DEVELOPMENT DIAGNOSTICS"));
+        assertTrue(text.contains("Build: ShareYourMons v0.3.2-dev.9+abc123def456"));
+        assertTrue(text.contains("Source fingerprint: sha256:aed4a36b"));
+        assertTrue(text.contains("Catalog SHA-256: 6ac86c6d"));
+        assertTrue(text.contains("Gearex [cobblemon:gearex]"));
+        assertTrue(text.contains("Aspects: male"));
+        assertTrue(text.contains("Categories: CUSTOM_SPECIES"));
+        assertTrue(text.contains("Mapping: expected-id"));
+        assertTrue(text.contains("Evidence: Cobblemon Town wiki #4053 (current page has no Mythical label)"));
+        assertTrue(text.contains("Unresolved aspects: none"));
+        assertTrue(text.endsWith("ShareYourMons · v0.3.2-dev.9+abc123def456 · catalog 6ac86c6db84d · schema 1\n"));
+    }
+
+    @Test
+    void diagnosticsAreAbsentFromOrdinaryReports() {
+        ReportRequest request = ReportRequest.of(ReportCategory.ALL);
+        String text = formatter.format(
+                engine.build(TestFixtures.documentedSpeciesInventory(), request), request);
+        assertFalse(text.contains("DEVELOPMENT DIAGNOSTICS"));
+        assertTrue(text.endsWith("ShareYourMons · v" + BuildIdentity.loadDefault().version()
+                + " · catalog " + BuildIdentity.loadDefault().shortCatalogHash()
+                + " · schema " + BuildIdentity.loadDefault().catalogSchemaVersion() + "\n"));
+    }
+
+    @Test
+    void marioAndAdventureAppearInClipboardOutput() {
+        ReportRequest request = ReportRequest.of(
+                ReportCategory.SKINS, ReportCategory.LEGEND_MYTH, ReportCategory.SHINY);
+        String text = formatter.format(
+                engine.build(TestFixtures.authoritativeSkinProgressionInventory(), request), request);
+
+        assertTrue(text.contains("Mario\n    Tyrunt"));
+        assertTrue(text.contains("Adventure\n    Eevee"));
+        assertTrue(text.contains("Easter\n    Snorlax"));
+        assertTrue(text.indexOf("Mario") < text.indexOf("Adventure"));
+        assertTrue(text.indexOf("Adventure") < text.indexOf("Petal"));
+        assertFalse(text.contains("UNRESOLVED"));
+        assertFalse(text.contains("Reason: Unrecognized aspect"));
     }
 
     @Test

@@ -51,6 +51,89 @@ class ClassificationServiceTest {
     }
 
     @Test
+    void mario2026ResolvesOnRecordedAndUnrelatedSpecies() {
+        for (String[] candidate : new String[][]{
+                {"cobblemon:tyrunt", "Tyrunt"},
+                {"cobblemon:charmander", "Charmander"},
+                {"cobblemon:eevee", "Eevee"}}) {
+            ClassifiedPokemon result = service.classify(record(candidate[0], candidate[1],
+                    List.of("male", "mario2026"), false));
+            assertTrue(result.hasSkin(), candidate[0]);
+            assertEquals("Mario", result.skin().family().displayName(), candidate[0]);
+            assertEquals(SkinResolutionStatus.RESOLVED, result.skin().status(), candidate[0]);
+            assertTrue(result.unknownAspects().isEmpty(), candidate[0]);
+        }
+    }
+
+    @Test
+    void adventure2026ResolvesOnRecordedSpeciesAndKeepsMarkersNonSkin() {
+        List<PokemonRecord> records = List.of(
+                record("cobblemon:eevee", "Eevee", List.of("male", "adventure2026"), false),
+                record("cobblemon:torterra", "Torterra",
+                        List.of("male", "tree-none", "adventure2026"), false),
+                record("cobblemon:zoroark", "Zoroark",
+                        List.of("male", "adventure2026", "ranked"), false));
+        for (var record : records) {
+            ClassifiedPokemon result = service.classify(record);
+            assertTrue(result.hasSkin(), record.speciesId());
+            assertEquals("Adventure", result.skin().family().displayName(), record.speciesId());
+            assertEquals(SkinResolutionStatus.RESOLVED, result.skin().status(), record.speciesId());
+            assertTrue(result.unknownAspects().isEmpty(), record.speciesId());
+        }
+
+        ClassifiedPokemon zoroark = service.classify(records.get(2));
+        assertTrue(zoroark.nonSkinAspects().contains("ranked"));
+        ClassifiedPokemon torterra = service.classify(records.get(1));
+        assertTrue(torterra.nonSkinAspects().contains("tree-none"));
+    }
+
+    @Test
+    void documentedCustomSpeciesUseExpectedIdsWithoutInventingCategories() {
+        ClassifiedPokemon sweetclust = service.classify(record("cobblemon:sweetclust", "Sweetclust",
+                List.of("female"), false));
+        assertTrue(sweetclust.customSpecies());
+        assertTrue(sweetclust.hasCategory(PokemonCategory.CUSTOM_SPECIES));
+        assertFalse(sweetclust.hasCategory(PokemonCategory.LEGENDARY));
+        assertFalse(sweetclust.hasCategory(PokemonCategory.MYTHICAL));
+        assertFalse(sweetclust.hasCategory(PokemonCategory.PARADOX));
+        assertFalse(sweetclust.hasCategory(PokemonCategory.ULTRA_BEAST));
+        assertTrue(sweetclust.unknownAspects().isEmpty());
+    }
+
+    @Test
+    void unresolvedDocumentedCategoriesStayUnknownInsteadOfBecomingMythical() {
+        List<PokemonRecord> records = List.of(
+                record("cobblemon:gearex", "Gearex", List.of("male"), false),
+                record("cobblemon:tyranogear", "Tyranogear", List.of("male"), false));
+        for (PokemonRecord pokemon : records) {
+            ClassifiedPokemon result = service.classify(pokemon);
+            assertTrue(result.customSpecies(), pokemon.speciesId());
+            assertTrue(result.hasCategory(PokemonCategory.CUSTOM_SPECIES), pokemon.speciesId());
+            assertFalse(result.hasCategory(PokemonCategory.MYTHICAL), pokemon.speciesId());
+            assertFalse(result.hasCategory(PokemonCategory.LEGENDARY), pokemon.speciesId());
+        }
+    }
+
+    @Test
+    void observedCustomParadoxResolvesFromDocumentedCategory() {
+        ClassifiedPokemon result = service.classify(record("cobblemon:ironlamp", "Iron Lamp",
+                List.of("genderless"), false));
+        assertTrue(result.customSpecies());
+        assertTrue(result.hasCategory(PokemonCategory.CUSTOM_SPECIES));
+        assertTrue(result.hasCategory(PokemonCategory.PARADOX));
+    }
+
+    @Test
+    void conflictingCustomCategoryIsNotPromoted() {
+        ClassifiedPokemon result = service.classify(record("cobblemon:seraphang", "Seraphang",
+                List.of("genderless"), false));
+        assertTrue(result.customSpecies());
+        assertTrue(result.hasCategory(PokemonCategory.CUSTOM_SPECIES));
+        assertFalse(result.hasCategory(PokemonCategory.LEGENDARY));
+        assertFalse(result.hasCategory(PokemonCategory.MYTHICAL));
+    }
+
+    @Test
     void radiationBreloomIsNotASkin() {
         ClassifiedPokemon result = service.classify(record("cobblemon:breloom", "Breloom",
                 List.of("male", "radiation"), false));

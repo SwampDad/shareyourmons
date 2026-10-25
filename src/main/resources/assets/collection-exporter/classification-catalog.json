@@ -3,6 +3,8 @@
   "generatedAt": "2026-10-22T09:05:37.446242+00:00",
   "provenance": {
     "generatedAt": "2026-10-22T09:05:37.446987+00:00",
+    "catalogUpdatedAt": "2026-10-25",
+    "catalogUpdateNote": "Classification audit: corrected Gearex/Tyranogear to unresolved; added Iron Lamp Paradox and Seraphang conflict evidence; standard Cobblemon category lists unchanged.",
     "cobblemonJar": "Cobblemon-fabric-1.8.2+1.21.1.jar",
     "cobblemonJarSha256": "cae8ac328b61354fbe415208b8c6ffc12e7155094d0a87082e85e7914fb380c2",
     "speciesDataGlob": "data/cobblemon/species/**/*.json",
@@ -20,9 +22,16 @@
       "archelian is a form, not a skin.",
       "alatian is a form, not a skin.",
       "tron2026 is the runtime aspect for the official Neon collection; Tron is an alias.",
+      "Owner accepted the nine-set historical skin progression on 2026-10-24: Mario, Adventure, Petal, Relic, Neon, Kimono, Wild West, Crystal, Spooky.",
+      "The accepted progression uses these exact runtime tokens in order: mario2026, adventure2026, petal2026, relic2026, tron2026, july2026kimono, august2026western, september2026crystall, october2026spooky.",
+      "Easter (easter2026) is a separately evidenced event offering, not part of the nine-set progression.",
+      "Owner acceptance of identities and ordering does not prove live in-game recognition; live PC evidence remains a separate validation level.",
       "Mega, alpha, gmax, and other gameplay/form aspects are not automatically skins.",
       "Unknown aspects are not automatically skins.",
-      "Magikarp Jump patterns, Gyarados eye colors, and Slowpoke regrown-tail values are appearance/form variants, not skins."
+      "Magikarp Jump patterns, Gyarados eye colors, and Slowpoke regrown-tail values are appearance/form variants, not skins.",
+      "Runtime observation is not required for catalog inclusion; expected species identifiers are marked separately from observed recognition.",
+      "Gearex and Tyranogear were titled Mythical in an older wiki capture, but the current wiki, the stub pages, and the shared #1172 Wiki index do not establish the attribute; their category status remains unresolved.",
+      "Documented custom species attributes remain unknown unless a source establishes them; unknown is not treated as ordinary."
     ]
   },
   "neutralAspects": [
@@ -38,7 +47,7 @@
       "displayName": "Mario",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "candidate",
+      "evidenceStatus": "accepted",
       "reportOrder": 1
     },
     {
@@ -47,7 +56,7 @@
       "displayName": "Adventure",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "candidate",
+      "evidenceStatus": "accepted",
       "reportOrder": 2
     },
     {
@@ -56,7 +65,7 @@
       "displayName": "Easter",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "candidate",
+      "evidenceStatus": "separate-event",
       "reportOrder": 3
     },
     {
@@ -65,7 +74,7 @@
       "displayName": "Petal",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "reviewed",
+      "evidenceStatus": "accepted",
       "reportOrder": 4
     },
     {
@@ -74,7 +83,7 @@
       "displayName": "Relic",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "reviewed",
+      "evidenceStatus": "accepted",
       "reportOrder": 5
     },
     {
@@ -85,7 +94,7 @@
         "Tron"
       ],
       "identityStatus": "confirmed",
-      "evidenceStatus": "proposed",
+      "evidenceStatus": "accepted",
       "reportOrder": 6
     },
     {
@@ -94,7 +103,7 @@
       "displayName": "Kimono",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "reviewed",
+      "evidenceStatus": "accepted",
       "reportOrder": 7
     },
     {
@@ -105,7 +114,7 @@
         "Wild West"
       ],
       "identityStatus": "confirmed",
-      "evidenceStatus": "reviewed",
+      "evidenceStatus": "accepted",
       "reportOrder": 8
     },
     {
@@ -114,7 +123,7 @@
       "displayName": "Crystal",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "reviewed",
+      "evidenceStatus": "accepted",
       "reportOrder": 9
     },
     {
@@ -123,7 +132,7 @@
       "displayName": "Spooky",
       "aliases": [],
       "identityStatus": "confirmed",
-      "evidenceStatus": "proposed",
+      "evidenceStatus": "accepted",
       "reportOrder": 10
     }
   ],
@@ -2537,6 +2546,211 @@
     "cobblemon:zubat",
     "cobblemon:zweilous",
     "cobblemon:zygarde"
+  ],
+  "documentedSpecies": [
+    {
+      "name": "Sweetclust",
+      "expectedSpeciesId": "cobblemon:sweetclust",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unknown",
+      "evolution": "Evolves from Luvdisc at level 30.",
+      "evidence": [
+        "Cobblemon Town wiki #4052",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Symphoneo",
+      "expectedSpeciesId": "cobblemon:symphoneo",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unknown",
+      "evolution": "Evolves from Chatot at level 30.",
+      "evidence": [
+        "Cobblemon Town wiki #4056",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Venobra",
+      "expectedSpeciesId": "cobblemon:venobra",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unknown",
+      "evolution": "No evolution relationship documented.",
+      "evidence": [
+        "Cobblemon Town wiki #4055",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Gearex",
+      "expectedSpeciesId": "cobblemon:gearex",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unresolved",
+      "evolution": "Evolves into Tyranogear at level 50.",
+      "evidence": [
+        "Cobblemon Town wiki #4053 (current page has no Mythical label)",
+        "older wiki capture titled Gearex (Mythical), but the page was a stub and shared #1172 with Regifighting",
+        "2026-10-21 staff announcement (no classification label)"
+      ]
+    },
+    {
+      "name": "Tyranogear",
+      "expectedSpeciesId": "cobblemon:tyranogear",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unresolved",
+      "evolution": "Evolves from Gearex at level 50.",
+      "evidence": [
+        "Cobblemon Town wiki #4054 (current page has no Mythical label)",
+        "older wiki capture titled Tyranogear (Mythical), but the page was a stub",
+        "2026-10-21 staff announcement (no classification label)"
+      ]
+    },
+    {
+      "name": "Lameyser",
+      "expectedSpeciesId": "cobblemon:lameyser",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unknown",
+      "evolution": "Evolves from Archelian Camerupt at level 45 while holding Mystic Water.",
+      "evidence": [
+        "Cobblemon Town wiki #4029",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Drimpact",
+      "expectedSpeciesId": "cobblemon:drimpact",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unknown",
+      "evolution": "Evolves from Archelian Dwebble when exposed to a Dragon Scale.",
+      "evidence": [
+        "Cobblemon Town wiki #4030",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Queentana",
+      "expectedSpeciesId": "cobblemon:queentana",
+      "speciesIdStatus": "expected",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "unknown",
+      "evolution": "Evolves from female Pawniard at level 52 after defeating one Kingambit.",
+      "evidence": [
+        "Cobblemon Town wiki #4034",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Iron Lamp",
+      "expectedSpeciesId": "cobblemon:ironlamp",
+      "speciesIdStatus": "observed",
+      "kind": "custom_paradox",
+      "categories": [
+        "PARADOX"
+      ],
+      "categoryStatus": "documented",
+      "evolution": "No evolution relationship documented.",
+      "evidence": [
+        "Cobblemon Town wiki Future Paradox page: 'Iron Lamp - The Paradox Pokémon'",
+        "Observed historical PC snapshot species cobblemon:ironlamp",
+        "2026-08-24 staff announcement identifies Iron Lamp as a Paradox Dimension design addition"
+      ]
+    },
+    {
+      "name": "Seraphang",
+      "expectedSpeciesId": "cobblemon:seraphang",
+      "speciesIdStatus": "observed",
+      "kind": "custom_species",
+      "categories": [],
+      "categoryStatus": "conflicting",
+      "evolution": "No evolution relationship documented.",
+      "evidence": [
+        "Cobblemon Town wiki #1168 title 'Seraphang (Legend)' and habitat 'Legendary Spawns'",
+        "Same wiki body calls Seraphang a 'mythical serpent'",
+        "Conflicting Legend/Legendary/Mythical labels are preserved; no category is applied"
+      ]
+    }
+  ],
+  "documentedForms": [
+    {
+      "name": "Archelian Numel",
+      "kind": "regional_form",
+      "baseSpeciesId": "cobblemon:numel",
+      "expectedFormId": null,
+      "expectedAspects": [],
+      "status": "documented_unmapped",
+      "notes": "Form/aspect token not documented; do not infer from the Archelian regional label.",
+      "evidence": [
+        "Cobblemon Town wiki #322",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Archelian Camerupt",
+      "kind": "regional_form",
+      "baseSpeciesId": "cobblemon:camerupt",
+      "expectedFormId": null,
+      "expectedAspects": [],
+      "status": "documented_unmapped",
+      "notes": "Form/aspect token not documented; evolution source for Lameyser.",
+      "evidence": [
+        "Cobblemon Town wiki #323",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Archelian Dwebble",
+      "kind": "regional_form",
+      "baseSpeciesId": "cobblemon:dwebble",
+      "expectedFormId": null,
+      "expectedAspects": [],
+      "status": "documented_unmapped",
+      "notes": "Form/aspect token not documented; evolution source for Drimpact.",
+      "evidence": [
+        "Cobblemon Town wiki #557",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Ogerpon Thunder Mask",
+      "kind": "alternate_form",
+      "baseSpeciesId": "cobblemon:ogerpon",
+      "expectedFormId": null,
+      "expectedAspects": [],
+      "status": "documented_unmapped",
+      "notes": "Use Thunder Mask to change Ogerpon form; mask aspect token not documented.",
+      "evidence": [
+        "Cobblemon Town wiki Thunder Ogerpon",
+        "2026-10-21 staff announcement"
+      ]
+    },
+    {
+      "name": "Ogerpon Windstorm Mask",
+      "kind": "alternate_form",
+      "baseSpeciesId": "cobblemon:ogerpon",
+      "expectedFormId": null,
+      "expectedAspects": [],
+      "status": "documented_unmapped",
+      "notes": "Use Windstorm Mask to change Ogerpon form; mask aspect token not documented.",
+      "evidence": [
+        "Cobblemon Town wiki Windstorm Ogerpon",
+        "2026-10-21 staff announcement"
+      ]
+    }
   ],
   "customSpeciesObserved": [
     "cobblemon:bambolt",

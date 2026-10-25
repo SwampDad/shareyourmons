@@ -1,20 +1,16 @@
 package com.cobbletown.collectionexporter.ui;
 
-import net.fabricmc.loader.api.FabricLoader;
+import com.cobbletown.collectionexporter.build.BuildIdentity;
 
-/** Builds the always-current version label from the installed Fabric mod metadata. */
+/** Builds the always-current version label from generated build provenance. */
 final class CollectionExporterVersionLabel {
-    private static final String MOD_ID = "collection-exporter";
     private static final String MOD_NAME = "ShareYourMons";
 
     private CollectionExporterVersionLabel() {
     }
 
     static String text() {
-        String version = FabricLoader.getInstance().getModContainer(MOD_ID)
-                .map(container -> container.getMetadata().getVersion().getFriendlyString())
-                .orElse("unknown");
-        return format(version);
+        return format(BuildIdentity.loadDefault().version());
     }
 
     static String format(String version) {

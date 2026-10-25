@@ -1,8 +1,68 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+import java.security.MessageDigest
+import java.time.Instant
+
 plugins {
     id 'fabric-loom' version '1.10.5'
 }
 
-version = project.mod_version
+// The canonical launcher source is vendored under src/main/java/com/swampmods/launcher.
+// The public checkout must build without a sibling workbench directory.
+
+def sha256Hex = { byte[] bytes ->
+    MessageDigest.getInstance('SHA-256').digest(bytes).collect { String.format('%02x', it) }.join()
+}
+
+def sha256File = { File file ->
+    MessageDigest.getInstance('SHA-256').with { digest ->
+        file.withInputStream { input ->
+            byte[] buffer = new byte[8192]
+            int read
+            while ((read = input.read(buffer)) >= 0) {
+                digest.update(buffer, 0, read)
+            }
+        }
+        digest.digest().collect { String.format('%02x', it) }.join()
+    }
+}
+
+def baseVersion = project.mod_version.toString()
+def catalogFile = file('src/main/resources/assets/collection-exporter/classification-catalog.json')
+if (!catalogFile.isFile()) {
+    throw new GradleException("classification catalog is missing: ${catalogFile}")
+}
+def catalogJson = new JsonSlurper().parse(catalogFile)
+def catalogSha256 = sha256File(catalogFile)
+def catalogVersion = catalogJson.generatedAt?.toString() ?: 'unknown'
+def catalogSchemaVersion = (catalogJson.schemaVersion ?: 0).toString()
+
+def sourceInputs = []
+sourceInputs.addAll(fileTree('src/main').files)
+sourceInputs.addAll(fileTree('src/test').files)
+sourceInputs.addAll(fileTree('gradle').files)
+sourceInputs.addAll([file('build.gradle'), file('settings.gradle'), file('gradle.properties')])
+sourceInputs = sourceInputs.findAll { it.isFile() }
+sourceInputs.sort { it.path }
+def sourceDigest = MessageDigest.getInstance('SHA-256')
+sourceInputs.each { inputFile ->
+    def relative = project.rootDir.toPath().relativize(inputFile.toPath()).toString().replace(File.separatorChar, '/' as char)
+    sourceDigest.update(relative.getBytes('UTF-8'))
+    sourceDigest.update(0 as byte)
+    sourceDigest.update(inputFile.bytes)
+    sourceDigest.update(0 as byte)
+}
+def sourceFingerprint = sourceDigest.digest().collect { String.format('%02x', it) }.join()
+def developmentBuild = baseVersion.contains('-dev')
+def resolvedVersion = developmentBuild ? "${baseVersion}+${sourceFingerprint.substring(0, 12)}" : baseVersion
+
+def sourceDateEpoch = System.getenv('SOURCE_DATE_EPOCH')
+def buildTimestamp = sourceDateEpoch != null && !sourceDateEpoch.isBlank()
+        ? Instant.ofEpochSecond(sourceDateEpoch.toLong()).toString()
+        : Instant.now().toString()
+
+version = resolvedVersion
 group = project.maven_group
 
 base {
@@ -18,6 +78,11 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // Fabric API 0.116.7+1.21.1 pinned by Modrinth version ID. The Fabric Maven path
+    // contains a plus sign that Gradle sends unencoded; the Modrinth ID is the same JAR.
+    modImplementation 'maven.modrinth:fabric-api:m6zu1K31'
+    // Loom needs Fabric's module metadata to expand the nested client-screen API on the
+    // compile/remap classpath. This resolves to the same verified Fabric API JAR above.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Cobblemon 1.8.2+1.21.1 (Modrinth version GJ2a1b8O). Compile-only; never bundled.
@@ -27,11 +92,57 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
+def generatedResources = layout.buildDirectory.dir('generated/resources')
+sourceSets.main.resources.srcDir(generatedResources)
+
+tasks.register('generateBuildInfo') {
+    outputs.dir(generatedResources)
+    inputs.property('version', resolvedVersion)
+    inputs.property('sourceFingerprint', sourceFingerprint)
+    inputs.property('catalogSha256', catalogSha256)
+    inputs.property('catalogVersion', catalogVersion)
+    inputs.property('catalogSchemaVersion', catalogSchemaVersion)
+    inputs.property('buildTimestamp', buildTimestamp)
+    doLast {
+        def output = generatedResources.get().file('assets/collection-exporter/build-info.properties').asFile
+        output.parentFile.mkdirs()
+        output.text = """version=${resolvedVersion}
+sourceFingerprint=${sourceFingerprint}
+catalogSha256=${catalogSha256}
+catalogVersion=${catalogVersion}
+catalogSchemaVersion=${catalogSchemaVersion}
+buildTimestamp=${buildTimestamp}
+developmentBuild=${developmentBuild}
+"""
+    }
+}
+
+tasks.named('processResources') {
+    dependsOn tasks.named('generateBuildInfo')
+}
+
 processResources {
     inputs.property 'version', project.version
     filesMatching('fabric.mod.json') {
         expand version: project.version
     }
+}
+
+tasks.register('verifyBuildInfo') {
+    dependsOn tasks.named('generateBuildInfo')
+    doLast {
+        def output = generatedResources.get().file('assets/collection-exporter/build-info.properties').asFile
+        def props = new Properties()
+        output.withInputStream { props.load(it) }
+        if (props.getProperty('version') != resolvedVersion) throw new GradleException('build-info version mismatch')
+        if (props.getProperty('sourceFingerprint') != sourceFingerprint) throw new GradleException('build-info source fingerprint mismatch')
+        if (props.getProperty('catalogSha256') != catalogSha256) throw new GradleException('build-info catalog hash mismatch')
+        if (props.getProperty('catalogSchemaVersion') != catalogSchemaVersion) throw new GradleException('build-info schema mismatch')
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('verifyBuildInfo')
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -45,4 +156,30 @@ java {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+}
+
+tasks.register('writeBuildManifest') {
+    dependsOn tasks.named('remapJar')
+    outputs.file(layout.buildDirectory.file('build-manifest.json'))
+    doLast {
+        def jarFile = tasks.named('remapJar').get().archiveFile.get().asFile
+        def manifest = [
+                version: resolvedVersion,
+                artifact: jarFile.name,
+                artifactSha256: sha256File(jarFile),
+                sourceType: 'local-worktree-fingerprint',
+                sourceFingerprint: sourceFingerprint,
+                gitCommit: null,
+                catalogVersion: catalogVersion,
+                catalogSchemaVersion: catalogSchemaVersion,
+                catalogSha256: catalogSha256,
+                buildTimestamp: buildTimestamp
+        ]
+        layout.buildDirectory.file('build-manifest.json').get().asFile.text =
+                JsonOutput.prettyPrint(JsonOutput.toJson(manifest)) + '\n'
+    }
+}
+
+tasks.named('build') {
+    finalizedBy tasks.named('writeBuildManifest')
 }

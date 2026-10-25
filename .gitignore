@@ -1,6 +1,6 @@
 # Gradle
 .gradle/
-**/build/
+/build/
 
 # IDE and operating-system files
 .idea/
@@ -15,3 +15,6 @@ crash-reports/
 saves/
 config/
 options.txt
+
+# Release binaries belong in GitHub Releases, not the source tree
+release/*.jar

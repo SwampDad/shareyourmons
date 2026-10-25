@@ -3,6 +3,7 @@ package com.cobbletown.collectionexporter.report;
 import com.cobbletown.collectionexporter.TestFixtures;
 import com.cobbletown.collectionexporter.classify.ClassificationCatalog;
 import com.cobbletown.collectionexporter.classify.ClassificationCatalogLoader;
+import com.cobbletown.collectionexporter.classify.PokemonCategory;
 import com.cobbletown.collectionexporter.data.PcInventorySnapshot;
 import org.junit.jupiter.api.Test;
 
@@ -102,6 +103,7 @@ class ReportEngineTest {
         assertEquals(1, result.summary().customSpeciesInstances());
         assertTrue(result.unresolved().isEmpty());
         assertEquals("Custommon", result.other().get(0).displayName());
+        assertEquals("cobblemon:custommon", result.other().get(0).speciesId());
     }
 
     @Test
@@ -180,6 +182,59 @@ class ReportEngineTest {
         assertEquals("Adventure", result.skinGroups().get(0).family().displayName());
         assertEquals("Zoroark", result.skinGroups().get(0).nonShiny().get(0).displayName());
         assertTrue(result.unresolved().isEmpty());
+    }
+
+    @Test
+    void unresolvedDocumentedCategoriesDoNotAppearInLegendMythSection() {
+        ReportResult result = engine.build(TestFixtures.documentedSpeciesInventory(),
+                ReportRequest.of(ReportCategory.LEGEND_MYTH));
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.summary().mythicalInstances());
+        assertTrue(result.legendMyth().isEmpty());
+    }
+
+    @Test
+    void allFilterKeepsDocumentedCustomSpeciesWithUnknownCategory() {
+        ReportResult result = engine.build(TestFixtures.documentedSpeciesInventory(),
+                ReportRequest.of(ReportCategory.ALL));
+        assertEquals(2, result.summary().includedInstances());
+        assertEquals(0, result.summary().mythicalInstances());
+        assertEquals(2, result.summary().customSpeciesInstances());
+        assertTrue(result.other().stream().anyMatch(entry -> entry.displayName().equals("Sweetclust")));
+        assertTrue(result.other().stream().anyMatch(entry -> entry.displayName().equals("Gearex")));
+        assertFalse(result.other().get(0).categories().contains(PokemonCategory.MYTHICAL));
+    }
+
+    @Test
+    void authoritativeSkinProgressionOrderIsPreserved() {
+        ReportResult result = engine.build(TestFixtures.authoritativeSkinProgressionInventory(),
+                ReportRequest.of(ReportCategory.SKINS));
+
+        assertEquals(10, result.summary().skinInstances());
+        assertEquals(List.of("Mario", "Adventure", "Easter", "Petal", "Relic", "Neon",
+                        "Kimono", "Western", "Crystal", "Spooky"),
+                result.skinGroups().stream().map(group -> group.family().displayName()).toList());
+        assertTrue(result.unresolved().isEmpty());
+        assertEquals("Tyrunt", find(result, "Mario", false, "Tyrunt").displayName());
+        assertEquals("Eevee", find(result, "Adventure", false, "Eevee").displayName());
+    }
+
+    @Test
+    void customParadoxIsCountedAndReachableByParadoxFilter() {
+        ReportResult all = engine.build(TestFixtures.classificationAuditInventory(),
+                ReportRequest.of(ReportCategory.ALL));
+        assertEquals(2, all.summary().includedInstances());
+        assertEquals(1, all.summary().paradoxInstances());
+        assertEquals(2, all.summary().customSpeciesInstances());
+        assertTrue(all.other().stream().anyMatch(entry -> entry.displayName().equals("Iron Lamp")));
+        assertTrue(all.other().stream().anyMatch(entry -> entry.displayName().equals("Seraphang")));
+
+        ReportResult paradox = engine.build(TestFixtures.classificationAuditInventory(),
+                ReportRequest.of(ReportCategory.PARADOX));
+        assertEquals(1, paradox.summary().includedInstances());
+        assertEquals("Iron Lamp", paradox.other().get(0).displayName());
+        assertEquals(1, all.counts().countFor(ReportCategory.PARADOX));
+        assertEquals(0, all.counts().countFor(ReportCategory.ULTRA_BEAST));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.cobbletown.collectionexporter.report;
 
+import com.cobbletown.collectionexporter.build.BuildIdentity;
 import com.cobbletown.collectionexporter.classify.PokemonCategory;
 import com.cobbletown.collectionexporter.data.InventoryCompleteness;
 
@@ -21,13 +22,19 @@ public final class ReportTextFormatter {
             DateTimeFormatter.ofPattern("MMMM d, yyyy · h:mm a z", Locale.US);
 
     private final ZoneId zoneId;
+    private final BuildIdentity buildIdentity;
 
     public ReportTextFormatter() {
-        this(ZoneId.systemDefault());
+        this(ZoneId.systemDefault(), BuildIdentity.loadDefault());
     }
 
     public ReportTextFormatter(ZoneId zoneId) {
+        this(zoneId, BuildIdentity.loadDefault());
+    }
+
+    public ReportTextFormatter(ZoneId zoneId, BuildIdentity buildIdentity) {
         this.zoneId = Objects.requireNonNull(zoneId, "zoneId");
+        this.buildIdentity = Objects.requireNonNull(buildIdentity, "buildIdentity");
     }
 
     public String format(ReportResult result, ReportRequest request) {
@@ -48,8 +55,10 @@ public final class ReportTextFormatter {
             appendSummary(out, result.summary());
         }
         if (request.includeDiagnostics()) {
+            appendDevelopmentDiagnostics(out, result);
             appendDiagnostics(out, result.diagnostics());
         }
+        appendBuildFooter(out);
         return out.toString().stripTrailing() + "\n";
     }
 
@@ -205,6 +214,32 @@ public final class ReportTextFormatter {
         if (value > 0) {
             out.append(label).append(": ").append(value).append('\n');
         }
+    }
+
+    private void appendDevelopmentDiagnostics(StringBuilder out, ReportResult result) {
+        appendSectionHeading(out, "DEVELOPMENT DIAGNOSTICS");
+        for (String line : buildIdentity.diagnosticLines()) {
+            out.append("  ").append(line).append('\n');
+        }
+        for (ClassificationDiagnostic diagnostic : result.classificationDiagnostics()) {
+            out.append("  ").append(diagnostic.displayName())
+                    .append(" [").append(diagnostic.speciesId()).append("]\n");
+            out.append("    Form: ").append(diagnostic.formId()).append('\n');
+            out.append("    Aspects: ").append(String.join(", ", diagnostic.aspects())).append('\n');
+            out.append("    Catalog match: ").append(diagnostic.matchedCatalogEntry()).append('\n');
+            out.append("    Categories: ").append(String.join(", ",
+                    diagnostic.categories().stream().map(Enum::name).sorted().toList())).append('\n');
+            out.append("    Mapping: ").append(diagnostic.mappingStatus()).append('\n');
+            out.append("    Evidence: ").append(diagnostic.evidence()).append('\n');
+            out.append("    Unresolved aspects: ")
+                    .append(diagnostic.unresolvedAspects().isEmpty()
+                            ? "none" : String.join(", ", diagnostic.unresolvedAspects()))
+                    .append('\n');
+        }
+    }
+
+    private void appendBuildFooter(StringBuilder out) {
+        out.append('\n').append(buildIdentity.reportFooter()).append('\n');
     }
 
     private void appendDiagnostics(StringBuilder out, List<String> diagnostics) {
