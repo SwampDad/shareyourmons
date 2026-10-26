@@ -1,137 +1,215 @@
 # ShareYourMons
 
-See what’s in your Cobblemon PC, find your special Pokémon, and share your collection without sorting through every box.
+**Your Cobblemon collection, all in one place.**
 
-ShareYourMons is a client-side Minecraft mod I made for the Cobblemon Town community. It brings your PC collection into one organized view, making it easier to find custom skins, shinies, and Legendary or Mythical Pokémon.
+ShareYourMons is a client-side Minecraft mod for Cobblemon Town and the Cobblemon Optimized: Your Pokémon Journey modpack.
 
-You can browse the results in-game or copy a text report to your clipboard.
+It helps you find the Pokémon you care about without opening every PC box. Browse custom skins, Legendary and Mythical Pokémon, and shinies; see where each Pokémon is stored; or copy a collection report to share with friends.
 
-ShareYourMons was previously called Collection Exporter.
+<img src="docs/images/shareyourmons-filters.png" alt="ShareYourMons filter controls" width="100%">
 
-## What you can do
+<table>
+<tr>
+<td width="40%" valign="top">
+<img src="docs/images/shareyourmons-collection.png" alt="ShareYourMons collection results" width="100%">
+</td>
+<td valign="top">
 
-* Find your special Pokémon. Filter for custom skins, Legendary and Mythical Pokémon, and shinies.
-* Browse everything in one place. View an organized, scrollable report instead of checking each PC box individually.
-* See where Pokémon are stored. Turn on PC locations to show box and slot numbers.
-* Share your collection. Copy a readable report and paste it wherever you choose.
-* Refresh when your collection changes. Update the report without restarting Minecraft.
-* Check anything the mod couldn’t identify. Unknown or conflicting skin information is kept separate rather than guessed.
+**What you can do**
 
-The mod works with the PC information Cobblemon has already synchronized to your game. It does not change your Pokémon.
+* **Find custom skins.** Browse recognized Cobblemon Town skin collections in one place.
+* **Find Legendary and Mythical Pokémon.** See them together in an organized view.
+* **Find shinies.** Check your whole PC without opening every box.
+* **Locate Pokémon.** Turn on PC locations to see the box and slot where each Pokémon is stored.
+* **Share your collection.** Copy a readable report and paste it wherever you like.
+
+ShareYourMons is client-side only. It reads PC information Cobblemon has already synchronized to your game and never changes your Pokémon. Open it from the Escape menu after installing the JAR.
+
+</td>
+</tr>
+</table>
+
+## Download & Install
+
+[**Download ShareYourMons (.jar)**](https://github.com/SwampDad/shareyourmons/releases/latest/download/shareyourmons.jar)
+
+This is the permanent download link for the current stable release, 0.3.1.
+
+### Install with CurseForge
+
+1. Open CurseForge and go to **My Modpacks**.
+2. Find the Cobblemon modpack and click its three-dot menu.
+
+   <img src="docs/images/install/01-curseforge-modpack-menu.png" alt="CurseForge My Modpacks with the modpack three-dot menu highlighted" width="100%">
+
+3. Select **Open Folder**.
+
+   <img src="docs/images/install/04-curseforge-open-folder.png" alt="CurseForge profile menu with Open Folder highlighted" width="225">
+
+4. Open the **mods** folder.
+5. Place the [**ShareYourMons JAR**](https://github.com/SwampDad/shareyourmons/releases/latest/download/shareyourmons.jar) inside.
+6. Remove any older ShareYourMons or Collection Exporter JAR.
+7. Launch the modpack normally.
+
+Install only one copy of ShareYourMons.
+
+### Open ShareYourMons in Minecraft
+
+<table>
+<tr>
+<td width="50%" valign="top">
+<strong>Only ShareYourMons installed</strong><br>
+<img src="docs/images/install/06-shareyourmons-menu.png" alt="Minecraft Escape menu with the ShareYourMons entry" width="100%"><br>
+Press <strong>Esc</strong> and select <strong>ShareYourMons</strong>.
+</td>
+<td width="50%" valign="top">
+<strong>Multiple Swamp Mods installed</strong><br>
+<img src="docs/images/install/05-swamp-mods-menu.png" alt="Minecraft Escape menu with the Swamp Mods entry" width="100%"><br>
+Press <strong>Esc</strong>, select <strong>Swamp Mods</strong>, then select <strong>ShareYourMons</strong>.
+</td>
+</tr>
+</table>
+
+These are alternative menu configurations, not sequential steps.
+
+## Current Features
+
+* **Custom Skins** groups recognized Cobblemon Town skins by collection.
+* **Legend & Mythic** collects Legendary and Mythical Pokémon.
+* **Shiny** finds shiny Pokémon across your PC.
+* **All** shows every Pokémon in your PC.
+* **Show PC Locations** adds the stored box and slot for each entry.
+* **Copy to Clipboard** creates a readable report of your selected categories.
+* **Refresh** updates the view from the PC information available to your game.
+* Unfamiliar or conflicting skin information stays visible under Unresolved instead of being guessed.
+
+## How to Use
+
+The filters at the top of the screen work together. A Pokémon is included when it matches any selected category.
+
+* **All:** every Pokémon in your PC.
+* **Custom Skins:** recognized Cobblemon Town skin collections.
+* **Legend & Mythic:** Legendary and Mythical Pokémon.
+* **Shiny:** shiny Pokémon.
+* **Show PC Locations:** display box and slot information.
+
+Use **Copy to Clipboard** when you want to share the current report. The copied text uses the categories and location setting currently selected.
+
+ShareYourMons does not yet provide individual Pokémon selection or one-click sharing directly into Minecraft chat.
+
+## How Classification Works
+
+ShareYourMons uses a reviewed catalog of documented Cobblemon Town skin identifiers. It compares those identifiers with the appearance information Cobblemon exposes to the client.
+
+When information is unfamiliar or conflicting, the mod keeps it visible as unresolved instead of assigning a guess. Legendary and Mythical categories come from Cobblemon species information.
+
+The catalog is based on reviewed information, not an official live server registry. Server content can change.
+
+Read the full research: [How ShareYourMons Recognizes Cobblemon Town Skins](docs/research/how-shareyourmons-recognizes-skins.md)
+
+## Possible Upcoming Features
+
+These are ideas being explored, not promised features or release dates:
+
+* **Advanced IV filtering.** Find 5x31 and 6x31 Pokémon more easily.
+* **Ability display and Hidden Ability identification.** See ability information in the collection view.
+* **Alpha Pokémon identification.** Mark Alpha Pokémon clearly.
+* **Pokédex integration.** Connect collection browsing with Pokédex progress.
+* **Live Touch Trade Finder.** Help players find touch trades for Pokédex completion.
+* **Better PC browsing.** Add clearer filtered list views.
+* **Improved individual and multiple-Pokémon sharing.** Make it easier to share one Pokémon or a small group.
+
+Tell me which of these would help you most through the Cobblemon Town Discord or GitHub Issues.
 
 ## Requirements
 
-ShareYourMons 0.3.1 is built for the following setup:
-
-| Component | Requirement |
+| Component | Supported target |
 | --- | --- |
 | Minecraft | 1.21.1 |
+| Mod loader | Fabric |
 | Fabric Loader | 0.18.0 or newer |
 | Fabric API | 0.116.7+1.21.1 or newer |
 | Cobblemon | 1.8.2 |
 | Java | 21 or newer |
+| Modpack | Cobblemon Optimized: Your Pokémon Journey |
 | Installation | Client only |
 
-These are the supported target versions. Other Minecraft versions, newer Cobblemon releases, and other modpacks have not been established as compatible.
+Other Minecraft versions, Cobblemon versions, and modpacks have not been verified as compatible.
 
 You do not need PC Plus or PC Exporter.
 
-## Installation
+## Privacy
 
-1. Install the Cobblemon Town modpack and its required dependencies.
-2. Download one ShareYourMons JAR from the [GitHub Releases page](https://github.com/SwampDad/shareyourmons/releases).
-3. Place that JAR in your Minecraft mods folder.
-4. Start Minecraft.
-5. Open the Escape menu and select ShareYourMons.
+ShareYourMons runs on your Minecraft client.
 
-If multiple compatible Swamp Mods are installed, you may see a Swamp Mods selector instead.
+It reads PC information Cobblemon has already synchronized to your game. It does not change your Pokémon or PC storage, run server commands, upload collection information, collect telemetry, or export files.
 
-## Which file should I download?
+Copying a report only happens when you choose to use **Copy to Clipboard**. You decide where to paste it.
 
-For version 0.3.1, the release includes three filenames:
+## Troubleshooting
 
-| File | Purpose |
-| --- | --- |
-| shareyourmons-0.3.1.jar | Version-specific download |
-| shareyourmons.jar | Stable download filename |
-| collection-exporter.jar | Compatibility filename from the old project name |
+### I can’t find ShareYourMons in the Escape menu
 
-All three contain the same mod. Install only one.
+* Check that the ShareYourMons JAR is in the mods folder for the profile you are launching.
+* Check that Minecraft 1.21.1, Fabric, Cobblemon, and the required dependencies are installed.
+* Remove any duplicate ShareYourMons JAR or old Collection Exporter JAR.
+* If other Swamp Mods are installed, look for the **Swamp Mods** menu.
 
-[Download the latest ShareYourMons JAR](https://github.com/SwampDad/shareyourmons/releases/latest/download/shareyourmons.jar)
+### My PC collection looks incomplete
 
-The internal Fabric mod ID is still collection-exporter. That is intentional, so the rename does not create a second mod identity.
+ShareYourMons reads the PC information currently synchronized to your client. That information can be incomplete, outdated, or unavailable. Try refreshing after your game has synchronized your PC information.
 
-## How does it recognize custom skins?
+### A custom skin isn’t recognized
 
-This turned out to be more complicated than I expected.
+The catalog uses reviewed identifiers. An unfamiliar skin may stay under Unresolved rather than being assigned an incorrect collection.
 
-Cobblemon exposes information about a Pokémon’s species, form, and internal appearance markers, but those markers do not always match the names players recognize.
+If you report it, include the species, form, and any relevant appearance information.
 
-For example, the skin collection called Neon uses the internal marker tron2026.
+### My copied report is too long
 
-I compared community information, the Cobblemon Town wiki, observed game data, and the game’s own definitions to build a carefully reviewed list of skin markers.
+Try narrowing the filters or turning off PC locations before copying. The place where you paste the report may also have a message-length limit.
 
-ShareYourMons only labels something as a custom skin when it recognizes a confirmed marker. If something is unfamiliar, it keeps that information visible for review instead of making a guess.
+## Recent Updates
 
-I wrote about the investigation, including the mistakes and corrections, in [How ShareYourMons Recognizes Cobblemon Town Skins](docs/research/how-shareyourmons-recognizes-skins.md).
+### 0.3.1 — ShareYourMons
 
-## Privacy and limitations
+Collection Exporter became ShareYourMons, with updated in-game branding and version information. This was primarily a branding release.
 
-ShareYourMons reads the PC data available to your Minecraft client.
+### 0.3.0 — Collection Viewer
 
-It does not:
+The first stable collection viewer introduced custom-skin recognition, Legendary and Mythical filtering, shiny filtering, PC box and slot locations, clipboard reports, and in-game collection browsing.
 
-* Send your collection to a website or external service.
-* Collect telemetry.
-* Modify Pokémon or PC storage.
-* Run server commands or require a server-side installation.
-* Export files automatically.
+Development work is not included in the current stable download until it has been approved for release.
 
-The clipboard feature only copies a report when you choose to use it.
+[View the full changelog](CHANGELOG.md)
 
-The skin catalog is based on reviewed information available during development. It is not an official or exhaustive list, and new server content may require an update.
+## Questions, Bugs & Suggestions
 
-If your PC information is incomplete or unavailable, the report may be limited.
+You can reach me in two ways:
 
-## Questions or problems?
+* Message **SwampDad** on the official Cobblemon Town Discord server.
+* [Open a GitHub issue](https://github.com/SwampDad/shareyourmons/issues) if you use GitHub.
 
-Use [GitHub Issues](https://github.com/SwampDad/shareyourmons/issues).
+You do not need a GitHub account to ask for help on Discord.
 
-Include the ShareYourMons version, what happened, and any relevant species, form, or appearance marker.
+Please include the ShareYourMons version and a brief description of the problem. For skin recognition issues, include the Pokémon species, form, and relevant appearance information.
 
-Please do not post full PC exports, private player information, or other players’ collection data.
-
-## For developers
-
-This is a Fabric project built with Java 21.
-
-Run the tests:
-
-```sh
-./gradlew test
-```
-
-Build the mod:
-
-```sh
-./gradlew build
-```
-
-The generated JAR is written to build/libs/.
-
-For implementation details, see the [classification reference](docs/classification.md).
+Please do not post complete private PC reports, player identifiers, or other players’ collection data.
 
 ## Documentation
 
 * [How ShareYourMons Recognizes Cobblemon Town Skins](docs/research/how-shareyourmons-recognizes-skins.md)
 * [Classification and developer reference](docs/classification.md)
 * [Documentation index](docs/README.md)
-* [Release history and checksums](release/README.md)
+* [Full changelog](CHANGELOG.md)
+* [Roadmap](ROADMAP.md)
+* [Release history](release/README.md)
 * [Attribution and notices](NOTICE.md)
 
-## Independence and license
+## Licensing and Attribution
 
-ShareYourMons is an independent community project. It is not an official Cobblemon or Cobblemon Town release and is not endorsed by either project.
+ShareYourMons is an independent community project by SwampDad. It is not an official release of, or endorsed by, Cobblemon, Cobblemon Town, Mojang, Microsoft, or Fabric.
 
-ShareYourMons is released under the MIT License. Third-party projects and materials retain their own licenses.
+ShareYourMons is open source under the [MIT License](LICENSE).
+
+See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md) for licensing and attribution.

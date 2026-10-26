@@ -1,41 +1,85 @@
 # Documentation
 
-ShareYourMons is a client-side Cobblemon collection viewer built for the Cobblemon Town community.
+ShareYourMons is a client-side Cobblemon collection viewer built for Cobblemon Town.
 
-Start with the [main README](../README.md) for installation, supported versions, and basic use.
+Start with the [main README](../README.md) for download, installation, usage, and
+troubleshooting.
 
-## Learn about the project
+## For players
+
+[Main README](../README.md)
+
+What ShareYourMons does, how to install it, how to use the collection view, and what to do
+if something does not work.
 
 [How ShareYourMons Recognizes Cobblemon Town Skins](research/how-shareyourmons-recognizes-skins.md)
 
-The story behind the skin catalog: where the information came from, what didn’t match, what I had to correct, and why the mod avoids guessing.
+The story behind the skin catalog: where the information came from, what did not match, what
+needed correcting, and why the mod avoids guessing.
 
-[Classification and Developer Reference](classification.md)
+[Changelog](../CHANGELOG.md)
 
-How the mod reads PC data, classifies Pokémon, handles unknown markers, and builds its reports.
+Released updates and the current development work.
 
-[Classification Update — 2026-10-24](classification-update-2026-10-24.md)
+[Roadmap](../ROADMAP.md)
 
-The accepted nine-set progression, Mario/Adventure regression evidence, newly documented
-fakemon and forms, validation results, and owner testing instructions.
+Recently completed work, ideas under exploration, and ongoing improvements.
+
+## For server owners
+
+[ShareYourMons for server owners](../README.md#for-server-owners)
+
+Client-side behavior, what the mod does not do, and the project’s approach to classification
+and uncertainty.
+
+[Classification and developer reference](classification.md)
+
+How ShareYourMons reads PC data, identifies custom skins and special Pokémon, handles unknown
+information, and builds its reports.
+
+[Research and evidence](research/how-shareyourmons-recognizes-skins.md)
+
+How the documented skin information was researched and reviewed.
+
+[Privacy boundaries and attribution](../NOTICE.md)
+
+Independence, upstream acknowledgments, licensing, and project boundaries.
+
+## Research and technical details
+
+[Classification and developer reference](classification.md)
+
+Classification rules, catalog contents, source map, build identity, and limitations.
 
 [Classification Evidence Audit — 2026-10-25](classification-audit-2026-10-25.md)
 
 The full catalog audit: standard Cobblemon categories, skins, custom species, forms,
 implementation paths, corrections, and unresolved evidence.
 
-## Releases and attribution
+[Classification Update — 2026-10-24](classification-update-2026-10-24.md)
+
+The accepted skin progression, Mario and Adventure recognition evidence, documented custom
+species and forms, validation results, and owner testing instructions.
+
+[Embedded Swamp Mods launcher contract](swamp-mods-launcher.md)
+
+The developer contract for the shared Swamp Mods launcher entry.
+
+## For maintainers
 
 [Release History and Checksums](../release/README.md)
 
-Current downloads, previous versions, and checksum records.
+Current downloads, previous versions, checksum records, and release procedures.
 
-[Attribution and Notices](../NOTICE.md)
+[Release Process and Checklist](../release/CHECKLIST.md)
 
-Project independence, upstream acknowledgments, and licensing information.
+The repeatable build, test, runtime validation, screenshot, publication, and verification
+steps.
 
-## For Cobblemon Town staff
+[Screenshot Provenance](images/README.md)
 
-The research article explains the evidence used to identify skin collections. The developer reference documents the current classification rules and limitations.
+Which build each public image represents and the rules for adding new screenshots.
 
-ShareYourMons is an independent community project, not an official Cobblemon Town tool or skin registry.
+[Repository notes](../AGENTS.md)
+
+Publication boundaries and repository maintenance notes.

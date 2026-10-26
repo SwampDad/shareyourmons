@@ -158,7 +158,7 @@ I compared the classification data against the available source material, observ
 
 The current public catalog contains ten recognized skin families and 54 known non-skin appearance markers. Nine of those families form the owner-accepted historical progression; Easter is a separately evidenced event offering. The catalog also includes the species information needed for the mod’s other collection categories.
 
-The project has 146 automated tests covering classification, filtering, report formatting, and related behavior.
+The project has an automated test suite covering classification, filtering, report formatting, and related behavior.
 
 Those tests help catch regressions in the code. They don’t prove that every skin ever released on the server has been documented.
 

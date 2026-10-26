@@ -30,7 +30,7 @@ against a copied list. The JAR SHA-256 matched the catalog provenance:
 Evidence reviewed:
 
 - Cobblemon 1.8.2 JAR `data/cobblemon/species/**/*.json` (1,025 species).
-- Current and older Cobbleton Town wiki captures, including page bodies, titles, URL slugs,
+- Current and older Cobblemon Town wiki captures, including page bodies, titles, URL slugs,
   stub status, and Wiki index entries.
 - Discord owner/staff announcements and the Discord archive navigation record.
 - Historical PC snapshot / observed custom-species list.

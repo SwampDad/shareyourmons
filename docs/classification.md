@@ -51,6 +51,25 @@ Unfamiliar markers are never promoted to confirmed skins solely because they con
 
 This is intentional: false positives make a collection report less trustworthy.
 
+### Evidence levels
+
+The catalog separates four levels:
+
+* Source evidence: a public wiki page or server-owner/staff announcement documents server
+  content.
+* Implemented recognition: ShareYourMons contains an exact catalog rule or identifier for it.
+* Automated validation: tests confirm that the implementation handles the documented token
+  or path.
+* Live validation: an actual client collection report confirms the result in-game.
+
+Server-owner acceptance of a skin progression is source evidence. It does not by itself
+prove that the live client supplies the expected identifier or that runtime recognition
+succeeds. Unverified classifications remain unresolved.
+
+ShareYourMons independently interprets documented information and maps it to identifiers
+exposed by Cobblemon. It is not an official server registry, and a wiki entry or
+announcement does not guarantee current availability.
+
 ## The bundled catalog
 
 The public classification catalog is stored at:
@@ -189,11 +208,12 @@ Build:
 ./gradlew build
 ```
 
-The public checkout’s current test results report 146 tests passing, with no failures, errors, or skipped tests.
+The public checkout includes an automated test suite. It covers classification, exclusions,
+conflicts, filters, report behavior, storage selection, interface layout, build identity,
+and related components.
 
-The tests cover classification, exclusions, conflicts, filters, report behavior, storage selection, interface layout, build identity, and related components.
-
-These are automated code tests, not proof of complete live-server coverage.
+Record test results for the exact build being released. These are automated code tests, not
+proof of complete live-server coverage.
 
 ## Development build identity
 
@@ -204,8 +224,13 @@ It also writes `build/build-manifest.json` with the external JAR SHA-256 and the
 provenance. The JAR hash is not embedded in the JAR.
 
 The source fingerprint is a deterministic hash of the relevant main/test source and build
-files. It is not a Git commit claim. Public releases use the simple version and retain
-detailed provenance in diagnostics.
+files. It is not a Git commit claim. Public releases use the simple version and keep detailed
+provenance in the embedded build identity and external build manifest.
+
+Release candidates and public releases use the simple version without a `-dev` suffix.
+They show `ShareYourMons · v<version>` in both the screen footer and the copied report, and
+they do not expose the development diagnostics control. Only versions containing `-dev`
+add the catalog/schema provenance to the footer and enable the `Dev Diagnostics` toggle.
 
 Development builds expose a `Dev Diagnostics` toggle in the export screen. The copied report
 then includes a separate diagnostic section with raw species ID, display name, form, aspects,
